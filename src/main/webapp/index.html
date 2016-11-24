@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <script src="https://unpkg.com/react@15/dist/react.min.js"></script>
+    <script src="https://unpkg.com/react-dom@15/dist/react-dom.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
+</head>
+<body>
+<table id="coverage">
+    <thead>
+    <tr>
+        <th>집계기준일</th>
+        <th>사이트 번호</th>
+        <th>사이트 명</th>
+        <th>디바이스 명</th>
+        <th>전체쿼리 수</th>
+        <th>성공쿼리 수</th>
+        <th>검색 성공율</th>
+        <th>실패쿼리 수</th>
+        <th>실패쿼리2 수</th>
+        <th>검색 실패율</th>
+    </tr>
+    </thead>
+    <tbody id="coverageBody">
+    </tbody>
+    <div id="content"></div>
+</table>
+<script type="text/babel">
+    axios.get('/coverage', {
+        params: {
+            ID: 12345
+        }
+    })
+    .then(function (response) {
+        ReactDOM.render(
+            <Coverage data={response.data}/>,
+            document.getElementById('coverageBody')
+        );
+
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+
+
+    var Coverage = React.createClass({
+        render: function() {
+            var item = this.props.data.map(function(i, index){
+                return (
+                    <tr>
+                        <td>{i.critn_dt}</td>
+                    </tr>
+                );
+            }.bind(this));
+
+            return item;
+        }
+    });
+
+
+</script>
+</body>
+</html>
