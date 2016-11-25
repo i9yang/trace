@@ -14,6 +14,11 @@ public class SsgCoverageRepositoryImpl extends QueryDslRepositorySupport impleme
 	}
 
 	@Override
+	public List<SsgCoverage> findAllQ() {
+		return findAllQ(1,9999);
+	}
+
+	@Override
 	public List<SsgCoverage> findAllQ(int page, int pageSize) {
 		QSsgCoverage ssgCoverage = QSsgCoverage.ssgCoverage;
 		QSsgSite ssgSite = QSsgSite.ssgSite;
