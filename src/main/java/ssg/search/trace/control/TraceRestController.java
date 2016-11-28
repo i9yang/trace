@@ -15,10 +15,8 @@ public class TraceRestController {
 	private SsgCoverageRepository ssgCoverageRepo;
 
 	@RequestMapping("/coverage")
-	public List<SsgCoverage> coverage(@RequestParam(defaultValue = "1") String page){
-		Integer p = Integer.parseInt(page);
-
-		List<SsgCoverage> list = ssgCoverageRepo.findAllQ(p, 6);
+	public List<SsgCoverage> coverage(@RequestParam(defaultValue = "1") String p){
+		List<SsgCoverage> list = ssgCoverageRepo.findAllQ(Integer.parseInt(p), 6);
 		return list;
 	}
 }

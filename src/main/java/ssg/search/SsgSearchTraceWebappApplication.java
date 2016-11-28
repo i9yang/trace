@@ -14,7 +14,6 @@ public class SsgSearchTraceWebappApplication {
 
 	@Bean
 	public ObjectMapper jacksonObjectMapper() {
-		return new ObjectMapper().setPropertyNamingStrategy(
-				PropertyNamingStrategy.LOWER_CASE);
+		return new ObjectMapper().setPropertyNamingStrategy(PropertyNamingStrategy.LOWER_CASE);
 	}
 }

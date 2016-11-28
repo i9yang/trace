@@ -2,64 +2,94 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <script src="https://unpkg.com/react@15/dist/react.min.js"></script>
-    <script src="https://unpkg.com/react-dom@15/dist/react-dom.min.js"></script>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/vue.resource/1.0.3/vue-resource.min.js"></script>
 </head>
 <body>
-<table id="coverage">
-    <thead>
-    <tr>
-        <th>집계기준일</th>
-        <th>사이트 번호</th>
-        <th>사이트 명</th>
-        <th>디바이스 명</th>
-        <th>전체쿼리 수</th>
-        <th>성공쿼리 수</th>
-        <th>검색 성공율</th>
-        <th>실패쿼리 수</th>
-        <th>실패쿼리2 수</th>
-        <th>검색 실패율</th>
-    </tr>
-    </thead>
-    <tbody id="coverageBody">
-    </tbody>
-    <div id="content"></div>
-</table>
-<script type="text/babel">
-    axios.get('/coverage', {
-        params: {
-            ID: 12345
+<div id="title" style="text-align:center;">
+    <h3>{{formatDate}} 검색 커버리지</h3>
+</div>
+<div id="coverage">
+    <table class="table">
+        <thead>
+        <tr>
+            <th>집계기준일</th>
+            <th>사이트 번호</th>
+            <th>사이트 명</th>
+            <th>전체쿼리 수</th>
+            <th>성공쿼리 수</th>
+            <th>검색 성공율</th>
+            <th>실패쿼리 수</th>
+            <th>실패쿼리2 수</th>
+            <th>검색 실패율</th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr v-for="i in items">
+                <td>{{i.critn_dt}}</td>
+                <td>{{i.site_no}}</td>
+                <td>{{i.ssg_site.site_nm}}</td>
+                <td>{{i.pv_count}}</td>
+                <td>{{i.success_count}}</td>
+                <td>{{(i.success_count / i.pv_count * 100).toFixed(2)}}</td>
+                <td>{{i.nr1_count}}</td>
+                <td>{{i.nr2_count}}</td>
+                <td>{{(i.nr2_count / i.pv_count  * 100).toFixed(2)}}</td>
+            </tr>
+        </tbody>
+    </table>
+    <div style="text-align:center;">
+        <button @click="prev" class="btn btn-default btn-sm">prev</button>
+        <button @click="next" class="btn btn-default btn-sm">next</button>
+</div>
+</div>
+<script type="text/javascript">
+var title = new Vue({
+    el: '#title',
+    data : {
+        formatDate : '',
+        date : ''
+    },
+    computed : {
+        formatDate : function(){
+            var pattern = /(\d{4})(\d{2})(\d{2})/;
+            return this.date.replace(pattern, '$1 $2/$3');
         }
-    })
-    .then(function (response) {
-        ReactDOM.render(
-            <Coverage data={response.data}/>,
-            document.getElementById('coverageBody')
-        );
+    }
+})
 
-    })
-    .catch(function (error) {
-        console.log(error);
-    });
-
-
-    var Coverage = React.createClass({
-        render: function() {
-            var item = this.props.data.map(function(i, index){
-                return (
-                    <tr>
-                        <td>{i.critn_dt}</td>
-                    </tr>
-                );
-            }.bind(this));
-
-            return item;
+var body = new Vue({
+    el: '#coverage',
+    data : {
+        items : [],
+        page : 1
+    },
+    created : function(){
+        this.changePage(this.page);
+    },
+    methods: {
+        prev : function(){
+            if(this.page != 1) {
+                this.page--;
+                this.changePage();
+            }
+        } ,
+        next : function(){
+            this.page++;
+            this.changePage();
+        } ,
+        changePage : function(){
+            this.$http.get('/coverage?p=' + this.page).then(function(response){
+                this.items = response.body;
+                var obj = response.body[0];
+                if(obj) {
+                    title.date = obj.critn_dt;
+                }
+            });
         }
-    });
-
-
+    }
+});
 </script>
 </body>
 </html>

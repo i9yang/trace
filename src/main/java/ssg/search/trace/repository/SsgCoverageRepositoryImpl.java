@@ -25,7 +25,7 @@ public class SsgCoverageRepositoryImpl extends QueryDslRepositorySupport impleme
 
 		return from(ssgCoverage)
 				.innerJoin(ssgCoverage.SSG_SITE, ssgSite)
-				.orderBy(ssgCoverage.CRITN_DT.desc())
+				.orderBy(ssgCoverage.CRITN_DT.desc(), ssgCoverage.SITE_NO.asc())
 				.limit(pageSize)
 				.offset((page-1) * pageSize)
 				.fetchJoin()
