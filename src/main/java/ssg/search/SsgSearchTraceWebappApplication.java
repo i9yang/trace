@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 @SpringBootApplication
 public class SsgSearchTraceWebappApplication {
@@ -15,5 +17,14 @@ public class SsgSearchTraceWebappApplication {
 	@Bean
 	public ObjectMapper jacksonObjectMapper() {
 		return new ObjectMapper().setPropertyNamingStrategy(PropertyNamingStrategy.LOWER_CASE);
+	}
+
+	@Bean
+	public WebMvcConfigurerAdapter forwardToIndex() {
+		return new WebMvcConfigurerAdapter() {
+			public void addViewControllers(ViewControllerRegistry registry) {
+				registry.addViewController("/").setViewName("forward:/index.html");
+			}
+		};
 	}
 }

@@ -6,9 +6,9 @@ import javax.persistence.*;
 
 @Entity
 @Data
-@Table(name = "SSG_COVERAGE")
-@IdClass(SsgCoverageId.class)
-public class SsgCoverage {
+@Table(name = "SSG_CTR40")
+@IdClass(SsgCtrId.class)
+public class SsgCtr40 {
 	@Id
 	private String CRITN_DT;
 
@@ -20,14 +20,14 @@ public class SsgCoverage {
 	private SsgSite SSG_SITE;
 
 	@Id
-	private int PV_COUNT;
+	private String QUERY;
 
 	@Id
-	private int SUCCESS_COUNT;
+	private String POSITION_NM;
 
 	@Id
-	private int NR1_COUNT;
+	private int COUNT;
 
 	@Id
-	private int NR2_COUNT;
+	private int TOTAL;
 }

@@ -25,9 +25,22 @@ public class SsgCoverageRepositoryImpl extends QueryDslRepositorySupport impleme
 
 		return from(ssgCoverage)
 				.innerJoin(ssgCoverage.SSG_SITE, ssgSite)
-				.orderBy(ssgCoverage.CRITN_DT.desc(), ssgCoverage.SITE_NO.asc())
+				.orderBy(ssgCoverage.SITE_NO.asc())
 				.limit(pageSize)
 				.offset((page-1) * pageSize)
+				.fetchJoin()
+				.fetch();
+	}
+
+	@Override
+	public List<SsgCoverage> findByCritnDtQ(String date) {
+		QSsgCoverage ssgCoverage = QSsgCoverage.ssgCoverage;
+		QSsgSite ssgSite = QSsgSite.ssgSite;
+
+		return from(ssgCoverage)
+				.innerJoin(ssgCoverage.SSG_SITE, ssgSite)
+				.orderBy(ssgCoverage.SITE_NO.asc())
+				.where(ssgCoverage.CRITN_DT.eq(date))
 				.fetchJoin()
 				.fetch();
 	}

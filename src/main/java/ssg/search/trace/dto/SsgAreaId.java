@@ -9,11 +9,11 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SsgCoverageId implements Serializable {
+public class SsgAreaId implements Serializable {
 	private String CRITN_DT;
 	private String SITE_NO;
+	private String QUERY;
+	private String AREA_ID;
 	private int PV_COUNT;
-	private int SUCCESS_COUNT;
-	private int NR1_COUNT;
-	private int NR2_COUNT;
+	private int CLICK_COUNT;
 }

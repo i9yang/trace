@@ -7,4 +7,5 @@ import java.util.List;
 public interface SsgCoverageRepositoryCustom {
 	List<SsgCoverage> findAllQ();
 	List<SsgCoverage> findAllQ(int page, int pageSize);
+	List<SsgCoverage> findByCritnDtQ(String date);
 }

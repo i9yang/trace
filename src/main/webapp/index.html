@@ -3,93 +3,769 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/pikaday/1.5.1/css/pikaday.min.css" rel="stylesheet"/>
     <script src="https://unpkg.com/vue/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/vue.resource/1.0.3/vue-resource.min.js"></script>
+    <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.0/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pikaday/1.5.1/pikaday.js"></script>
+    <style>
+        .container {
+            min-width: 1250px;
+            max-width: none !important;
+            margin-left: 15px;
+        }
+    </style>
 </head>
 <body>
-<div id="title" style="text-align:center;">
-    <h3>{{formatDate}} 검색 커버리지</h3>
+<div class="container" id="container">
+    <div class="row">
+        <div class="col-xs-3">
+            <div id="menu" style="text-align:center;">
+                <h3>Search</h3>
+            </div>
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <router-link to="/coverage">검색 커버리지</router-link>
+                </li>
+                <li class="list-group-item">
+                    <router-link to="/ctr">CTR 전체</router-link>
+                </li>
+                <li class="list-group-item">
+                    <router-link to="/ctrNotAll">CTR 검색어별</router-link>
+                </li>
+                <li class="list-group-item">
+                    <router-link to="/ctr40">검색 품질 측정용 CTR 전체</router-link>
+                </li>
+                <li class="list-group-item">
+                    <router-link to="/ctr40NotAll">검색 품질 측정용 CTR 검색어별</router-link>
+                </li>
+                <li class="list-group-item">
+                    <router-link to="/area">영역별 지표 전체</router-link>
+                </li>
+                <li class="list-group-item">
+                    <router-link to="/areaNotAll">영역별 지표 검색어별</router-link>
+                </li>
+            </ul>
+        </div>
+        <div class="col-xs-9">
+            <router-view></router-view>
+        </div>
+    </div>
 </div>
-<div id="coverage">
-    <table class="table">
-        <thead>
-        <tr>
-            <th>집계기준일</th>
-            <th>사이트 번호</th>
-            <th>사이트 명</th>
-            <th>전체쿼리 수</th>
-            <th>성공쿼리 수</th>
-            <th>검색 성공율</th>
-            <th>실패쿼리 수</th>
-            <th>실패쿼리2 수</th>
-            <th>검색 실패율</th>
-        </tr>
-        </thead>
-        <tbody>
-            <tr v-for="i in items">
-                <td>{{i.critn_dt}}</td>
-                <td>{{i.site_no}}</td>
-                <td>{{i.ssg_site.site_nm}}</td>
-                <td>{{i.pv_count}}</td>
-                <td>{{i.success_count}}</td>
-                <td>{{(i.success_count / i.pv_count * 100).toFixed(2)}}</td>
-                <td>{{i.nr1_count}}</td>
-                <td>{{i.nr2_count}}</td>
-                <td>{{(i.nr2_count / i.pv_count  * 100).toFixed(2)}}</td>
-            </tr>
-        </tbody>
-    </table>
-    <div style="text-align:center;">
-        <button @click="prev" class="btn btn-default btn-sm">prev</button>
-        <button @click="next" class="btn btn-default btn-sm">next</button>
-</div>
-</div>
-<script type="text/javascript">
-var title = new Vue({
-    el: '#title',
-    data : {
-        formatDate : '',
-        date : ''
-    },
-    computed : {
-        formatDate : function(){
-            var pattern = /(\d{4})(\d{2})(\d{2})/;
-            return this.date.replace(pattern, '$1 $2/$3');
-        }
-    }
-})
+<script type="x-template" id="coverageTemplate">
+    <div>
+        <div style="text-align:center;">
+            <h3>{{formatDate}} {{title}}</h3>
+            <div style="text-align:center;">
+                <input type="text" id="datepicker" placeholder="Pick a date" v-model="formatDate" readonly/>
+            </div>
+        </div>
+        <div>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>집계기준일</th>
+                    <th>사이트 번호</th>
+                    <th>사이트 명</th>
+                    <th>전체쿼리 수</th>
+                    <th>성공쿼리 수</th>
+                    <th>검색 성공율</th>
+                    <th>실패쿼리 수</th>
+                    <th>실패쿼리2 수</th>
+                    <th>검색 실패율</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="i in items">
+                    <td>{{i.critn_dt}}</td>
+                    <td>{{i.site_no}}</td>
+                    <td>{{i.ssg_site.site_nm}}</td>
+                    <td>{{i.pv_count}}</td>
+                    <td>{{i.success_count}}</td>
+                    <td>{{(i.success_count / i.pv_count * 100).toFixed(2)}}</td>
+                    <td>{{i.nr1_count}}</td>
+                    <td>{{i.nr2_count}}</td>
+                    <td>{{(i.nr2_count / i.pv_count  * 100).toFixed(2)}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</script>
+<script type="x-template" id="ctrTemplate">
+    <div>
+        <div style="text-align:center;">
+            <h3>{{formatDate}} {{title}}</h3>
+            <div style="text-align:center;">
+                <input type="text" id="datepicker" placeholder="Pick a date" v-model="formatDate" readonly/>
+            </div>
+        </div>
+        <div>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>집계기준일</th>
+                    <th>사이트 번호</th>
+                    <th>사이트 명</th>
+                    <th>COUNT</th>
+                    <th>TOTAL</th>
+                    <th>%</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="i in items">
+                    <td>{{i.critn_dt}}</td>
+                    <td>{{i.site_no}}</td>
+                    <td>{{i.ssg_site.site_nm}}</td>
+                    <td>{{i.count}}</td>
+                    <td>{{i.total}}</td>
+                    <td>{{(i.count / i.total * 100).toFixed(2)}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</script>
+<script type="x-template" id="ctrNotAllTemplate">
+    <div>
+        <div style="text-align:center;">
+            <h3>{{formatDate}} {{title}}</h3>
+            <div style="text-align:center;">
+                <router-link v-bind:to="'/ctrNotAll/' + date + '/' + prevPage"><button class="btn btn-default btn-sm">prev</button></router-link>
+                <router-link v-bind:to="'/ctrNotAll/' + date + '/' + nextPage"><button class="btn btn-default btn-sm">next</button></router-link>
+                <input type="text" id="datepicker" placeholder="Pick a date" v-model="formatDate" readonly/>
+            </div>
+        </div>
+        <div>
+            <table v-if="items.length > 0" class="table">
+                <thead>
+                <tr>
+                    <th>집계기준일</th>
+                    <th>사이트 번호</th>
+                    <th>사이트 명</th>
+                    <th>QUERY</th>
+                    <th>COUNT</th>
+                    <th>TOTAL</th>
+                    <th>%</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="i in items">
+                    <td>{{i.critn_dt}}</td>
+                    <td>{{i.site_no}}</td>
+                    <td>{{i.ssg_site.site_nm}}</td>
+                    <td>{{i.query}}</td>
+                    <td>{{i.count}}</td>
+                    <td>{{i.total}}</td>
+                    <td>{{(i.count / i.total * 100).toFixed(2)}}</td>
+                </tr>
+                </tbody>
+            </table>
+            <div v-else>loading~~~</div>
+        </div>
+    </div>
+</script>
+<script type="x-template" id="ctr40Template">
+    <div>
+        <div style="text-align:center;">
+            <h3>{{formatDate}} {{title}}</h3>
+            <div style="text-align:center;">
+                <input type="text" id="datepicker" placeholder="Pick a date" v-model="formatDate" readonly/>
+            </div>
+        </div>
+        <div>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>집계기준일</th>
+                    <th>사이트 번호</th>
+                    <th>사이트 명</th>
+                    <th>COUNT</th>
+                    <th>TOTAL</th>
+                    <th>%</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="i in items">
+                    <td>{{i.critn_dt}}</td>
+                    <td>{{i.site_no}}</td>
+                    <td>{{i.ssg_site.site_nm}}</td>
+                    <td>{{i.count}}</td>
+                    <td>{{i.total}}</td>
+                    <td>{{(i.count / i.total * 100).toFixed(2)}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</script>
+<script type="x-template" id="ctr40NotAllTemplate">
+    <div>
+        <div style="text-align:center;">
+            <h3>{{formatDate}} {{title}}</h3>
+            <div style="text-align:center;">
+                <router-link v-bind:to="'/ctr40NotAll/' + date + '/' + prevPage"><button class="btn btn-default btn-sm">prev</button></router-link>
+                <router-link v-bind:to="'/ctr40NotAll/' + date + '/' + nextPage"><button class="btn btn-default btn-sm">next</button></router-link>
+                <input type="text" id="datepicker" placeholder="Pick a date" v-model="formatDate" readonly/>
+            </div>
+        </div>
+        <div>
+            <table v-if="items.length > 0" class="table">
+                <thead>
+                <tr>
+                    <th>집계기준일</th>
+                    <th>사이트 번호</th>
+                    <th>사이트 명</th>
+                    <th>QUERY</th>
+                    <th>COUNT</th>
+                    <th>TOTAL</th>
+                    <th>%</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="i in items">
+                    <td>{{i.critn_dt}}</td>
+                    <td>{{i.site_no}}</td>
+                    <td>{{i.ssg_site.site_nm}}</td>
+                    <td>{{i.query}}</td>
+                    <td>{{i.count}}</td>
+                    <td>{{i.total}}</td>
+                    <td>{{(i.count / i.total * 100).toFixed(2)}}</td>
+                </tr>
+                </tbody>
+            </table>
+            <div v-else>loading~~~</div>
+        </div>
+    </div>
+</script>
+<script type="x-template" id="areaTemplate">
+    <div>
+        <div style="text-align:center;">
+            <h3>{{formatDate}} {{title}}</h3>
+            <div style="text-align:center;">
+                <input type="text" id="datepicker" placeholder="Pick a date" v-model="formatDate" readonly/>
+            </div>
+        </div>
+        <div>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>집계기준일</th>
+                    <th>사이트 번호</th>
+                    <th>사이트 명</th>
+                    <th>AREA_ID</th>
+                    <th>AREA_NM</th>
+                    <th>CLICK_COUNT</th>
+                    <th>PV_COUNT</th>
+                    <th>%</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="i in items">
+                    <td>{{i.critn_dt}}</td>
+                    <td>{{i.site_no}}</td>
+                    <td>{{i.ssg_site.site_nm}}</td>
+                    <td>{{i.area_id}}</td>
+                    <td>{{areaMap[i.area_id]}}</td>
+                    <td>{{i.click_count}}</td>
+                    <td>{{i.pv_count}}</td>
+                    <td>{{(i.click_count / i.pv_count * 100).toFixed(2)}}</td>
+                </tr>
+                </tbody>
+            </table>
 
-var body = new Vue({
-    el: '#coverage',
-    data : {
-        items : [],
-        page : 1
-    },
-    created : function(){
-        this.changePage(this.page);
-    },
-    methods: {
-        prev : function(){
-            if(this.page != 1) {
-                this.page--;
-                this.changePage();
+        </div>
+    </div>
+</script>
+<script type="x-template" id="areaNotAllTemplate">
+    <div>
+        <div style="text-align:center;">
+            <h3>{{formatDate}} {{title}}</h3>
+            <div style="text-align:center;">
+                <router-link v-bind:to="'/areaNotAll/' + date + '/' + prevPage"><button class="btn btn-default btn-sm">prev</button></router-link>
+                <router-link v-bind:to="'/areaNotAll/' + date + '/' + nextPage"><button class="btn btn-default btn-sm">next</button></router-link>
+                <input type="text" id="datepicker" placeholder="Pick a date" v-model="formatDate" readonly/>
+            </div>
+        </div>
+        <div>
+            <table v-if="items.length > 0" class="table">
+                <thead>
+                <tr>
+                    <th>집계기준일</th>
+                    <th>사이트 번호</th>
+                    <th>사이트 명</th>
+                    <th>AREA_id</th>
+                    <th>AREA_NM</th>
+                    <th>QUERY</th>
+                    <th>CLICK_COUNT</th>
+                    <th>PV_COUNT</th>
+                    <th>%</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="i in items">
+                    <td>{{i.critn_dt}}</td>
+                    <td>{{i.site_no}}</td>
+                    <td>{{i.ssg_site.site_nm}}</td>
+                    <td>{{i.area_id}}</td>
+                    <td>{{areaMap[i.area_id]}}</td>
+                    <td>{{i.query}}</td>
+                    <td>{{i.click_count}}</td>
+                    <td>{{i.pv_count}}</td>
+                    <td>{{(i.click_count / i.pv_count * 100).toFixed(2)}}</td>
+                </tr>
+                </tbody>
+            </table>
+            <div v-else>loading~~~</div>
+        </div>
+    </div>
+</script>
+<script type="text/javascript">
+    var areaMap = {
+        srchwdrl : '연관검색어',
+        postng : '상품평',
+        pnshop : '기획전',
+        recipe : '레시피',
+        spprice : '특가상품',
+        banr : '배너',
+        lifemagazine : '라이프매거진'
+    };
+
+    var coverage = {
+        template : '#coverageTemplate' ,
+        data : function(){
+            return {
+                items : [],
+                formatDate: '',
+                date: '',
+                title: '검색 커버리지'
             }
-        } ,
-        next : function(){
-            this.page++;
-            this.changePage();
-        } ,
-        changePage : function(){
-            this.$http.get('/coverage?p=' + this.page).then(function(response){
-                this.items = response.body;
-                var obj = response.body[0];
-                if(obj) {
-                    title.date = obj.critn_dt;
+        },
+        created : function(){
+            this.changeDate();
+        },
+        mounted : function(){
+            var picker = new Pikaday({
+                field: document.getElementById('datepicker'),
+                format: "YYYY MM/DD",
+                minDate: new Date(2016, 0, 1),
+                maxDate: new Date(2050, 12, 31),
+                yearRange: [2016,2050],
+                onSelect: function() {
+                    router.push('/coverage/' + this.getMoment().format('YYYYMMDD'));
                 }
             });
+        },
+        watch: {
+            '$route': 'changeDate'
+        },
+        methods: {
+            changeDate: function () {
+                if (this.$route.params.date) {
+                    this.date = this.$route.params.date;
+                } else {
+                    this.date = moment().subtract(1, 'days').format('YYYYMMDD');
+                }
+
+                this.$http.get('/coverage/' + this.date)
+                        .then(function (response) {
+                            this.items = response.body.list;
+                        });
+            }
+        },
+        computed : {
+            formatDate : function(){
+                var pattern = /(\d{4})(\d{2})(\d{2})/;
+                return this.date.replace(pattern, '$1 $2/$3');
+            }
         }
-    }
-});
+     };
+
+    var ctr = {
+        template : '#ctrTemplate' ,
+        data : function(){
+            return {
+                items : [],
+                formatDate: '',
+                date: '',
+                title: 'CTR 전체'
+            }
+        },
+        created : function(){
+            this.changeDate();
+        },
+        mounted : function(){
+            var picker = new Pikaday({
+                field: document.getElementById('datepicker'),
+                format: "YYYY MM/DD",
+                minDate: new Date(2016, 0, 1),
+                maxDate: new Date(2050, 12, 31),
+                yearRange: [2016,2050],
+                onSelect: function() {
+                    router.push('/ctr/' + this.getMoment().format('YYYYMMDD'));
+                }
+            });
+        },
+        watch: {
+            '$route': 'changeDate'
+        },
+        methods: {
+            changeDate: function () {
+                if (this.$route.params.date) {
+                    this.date = this.$route.params.date;
+                } else {
+                    this.date = moment().subtract(1, 'days').format('YYYYMMDD');
+                }
+
+                this.$http.get('/ctr/' + this.date)
+                        .then(function (response) {
+                            this.items = response.body.list;
+                        });
+            }
+        },
+        computed : {
+            formatDate : function(){
+                var pattern = /(\d{4})(\d{2})(\d{2})/;
+                return this.date.replace(pattern, '$1 $2/$3');
+            }
+        }
+    };
+
+    var ctrNotAll = {
+        template : '#ctrNotAllTemplate' ,
+        data : function(){
+            return {
+                items : [],
+                formatDate: '',
+                date: '',
+                page: 1,
+                title: 'CTR 검색어별',
+                prevPage: 1,
+                nextPage: 2
+            }
+        },
+        created : function(){
+            this.changeDate();
+        },
+        mounted : function(){
+            var picker = new Pikaday({
+                field: document.getElementById('datepicker'),
+                format: "YYYY MM/DD",
+                minDate: new Date(2016, 0, 1),
+                maxDate: new Date(2050, 12, 31),
+                yearRange: [2016,2050],
+                onSelect: function() {
+                    router.push('/ctrNotAll/' + this.getMoment().format('YYYYMMDD') + '/1');
+                }
+            });
+        },
+        watch: {
+            '$route': 'changeDate'
+        },
+        methods: {
+            changeDate: function () {
+                this.items =[];
+                if (this.$route.params.date) {
+                    this.date = this.$route.params.date;
+                    this.page = this.$route.params.page;
+                } else {
+                    this.date = moment().subtract(1, 'days').format('YYYYMMDD');
+                    this.page = 1;
+                }
+
+                this.$http.get('/ctrNotAll/' + this.date + '/' + this.page)
+                        .then(function (response) {
+                            this.items = response.body.list;
+
+                            if(this.page > 1) {
+                                this.prevPage = parseInt(this.page,10) - 1;
+                            } else {
+                                this.prevPage = 1;
+                            }
+
+                            if(response.body.cnt > this.page * 6) {
+                                this.nextPage = parseInt(this.page,10) + 1;
+                            } else {
+                                this.nextPage = this.page;
+                            }
+                        });
+            }
+        },
+        computed : {
+            formatDate : function(){
+                var pattern = /(\d{4})(\d{2})(\d{2})/;
+                return this.date.replace(pattern, '$1 $2/$3');
+            }
+        }
+    };
+
+    var ctr40 = {
+        template : '#ctr40Template' ,
+        data : function(){
+            return {
+                items : [],
+                formatDate: '',
+                date: '',
+                title: '검색 품질 측정용 CTR 전체'
+            }
+        },
+        created : function(){
+            this.changeDate();
+        },
+        mounted : function(){
+            var picker = new Pikaday({
+                field: document.getElementById('datepicker'),
+                format: "YYYY MM/DD",
+                minDate: new Date(2016, 0, 1),
+                maxDate: new Date(2050, 12, 31),
+                yearRange: [2016,2050],
+                onSelect: function() {
+                    router.push('/ctr40/' + this.getMoment().format('YYYYMMDD'));
+                }
+            });
+        },
+        watch: {
+            '$route': 'changeDate'
+        },
+        methods: {
+            changeDate: function () {
+                if (this.$route.params.date) {
+                    this.date = this.$route.params.date;
+                } else {
+                    this.date = moment().subtract(1, 'days').format('YYYYMMDD');
+                }
+
+                this.$http.get('/ctr40/' + this.date)
+                        .then(function (response) {
+                            this.items = response.body.list;
+                        });
+            }
+        },
+        computed : {
+            formatDate : function(){
+                var pattern = /(\d{4})(\d{2})(\d{2})/;
+                return this.date.replace(pattern, '$1 $2/$3');
+            }
+        }
+    };
+
+    var ctr40NotAll = {
+        template : '#ctr40NotAllTemplate' ,
+        data : function(){
+            return {
+                items : [],
+                formatDate: '',
+                date: '',
+                page: 1,
+                title: '검색 품질 측정용 CTR 검색어별',
+                prevPage: 1,
+                nextPage: 2
+            }
+        },
+        created : function(){
+            this.changeDate();
+        },
+        mounted : function(){
+            var picker = new Pikaday({
+                field: document.getElementById('datepicker'),
+                format: "YYYY MM/DD",
+                minDate: new Date(2016, 0, 1),
+                maxDate: new Date(2050, 12, 31),
+                yearRange: [2016,2050],
+                onSelect: function() {
+                    router.push('/ctr40NotAll/' + this.getMoment().format('YYYYMMDD') + '/1');
+                }
+            });
+        },
+        watch: {
+            '$route': 'changeDate'
+        },
+        methods: {
+            changeDate: function () {
+                this.items =[];
+                if (this.$route.params.date) {
+                    this.date = this.$route.params.date;
+                    this.page = this.$route.params.page;
+                } else {
+                    this.date = moment().subtract(1, 'days').format('YYYYMMDD');
+                    this.page = 1;
+                }
+
+                this.$http.get('/ctr40NotAll/' + this.date + '/' + this.page)
+                        .then(function (response) {
+                            this.items = response.body.list;
+
+                            if(this.page > 1) {
+                                this.prevPage = parseInt(this.page,10) - 1;
+                            } else {
+                                this.prevPage = 1;
+                            }
+
+                            if(response.body.cnt > this.page * 6) {
+                                this.nextPage = parseInt(this.page,10) + 1;
+                            } else {
+                                this.nextPage = this.page;
+                            }
+                        });
+            }
+        },
+        computed : {
+            formatDate : function(){
+                var pattern = /(\d{4})(\d{2})(\d{2})/;
+                return this.date.replace(pattern, '$1 $2/$3');
+            }
+        }
+    };
+
+    var area = {
+        template : '#areaTemplate' ,
+        data : function(){
+            return {
+                items : [],
+                formatDate: '',
+                date: '',
+                title: '영역별 지표 전체',
+                areaMap: {}
+            }
+        },
+        created : function(){
+            this.areaMap =  areaMap;
+            this.changeDate();
+        },
+        mounted : function(){
+            var picker = new Pikaday({
+                field: document.getElementById('datepicker'),
+                format: "YYYY MM/DD",
+                minDate: new Date(2016, 0, 1),
+                maxDate: new Date(2050, 12, 31),
+                yearRange: [2016,2050],
+                onSelect: function() {
+                    router.push('/area/' + this.getMoment().format('YYYYMMDD'));
+                }
+            });
+        },
+        watch: {
+            '$route': 'changeDate'
+        },
+        methods: {
+            changeDate: function () {
+                if (this.$route.params.date) {
+                    this.date = this.$route.params.date;
+                } else {
+                    this.date = moment().subtract(1, 'days').format('YYYYMMDD');
+                }
+
+                this.$http.get('/area/' + this.date)
+                        .then(function (response) {
+                            this.items = response.body.list;
+                        });
+            }
+        },
+        computed : {
+            formatDate : function(){
+                var pattern = /(\d{4})(\d{2})(\d{2})/;
+                return this.date.replace(pattern, '$1 $2/$3');
+            }
+        }
+    };
+
+    var areaNotAll = {
+        template : '#areaNotAllTemplate' ,
+        data : function(){
+            return {
+                items : [],
+                formatDate: '',
+                date: '',
+                page: 1,
+                title: '영역별 지표 검색어별',
+                prevPage: 1,
+                nextPage: 2,
+                areaMap: {}
+            }
+        },
+        created : function(){
+            this.areaMap =  areaMap;
+            this.changeDate();
+        },
+        mounted : function(){
+            var picker = new Pikaday({
+                field: document.getElementById('datepicker'),
+                format: "YYYY MM/DD",
+                minDate: new Date(2016, 0, 1),
+                maxDate: new Date(2050, 12, 31),
+                yearRange: [2016,2050],
+                onSelect: function() {
+                    router.push('/areaNotAll/' + this.getMoment().format('YYYYMMDD') + '/1');
+                }
+            });
+        },
+        watch: {
+            '$route': 'changeDate'
+        },
+        methods: {
+            changeDate: function () {
+                this.items =[];
+                if (this.$route.params.date) {
+                    this.date = this.$route.params.date;
+                    this.page = this.$route.params.page;
+                } else {
+                    this.date = moment().subtract(1, 'days').format('YYYYMMDD');
+                    this.page = 1;
+                }
+
+                this.$http.get('/areaNotAll/' + this.date + '/' + this.page)
+                        .then(function (response) {
+                            this.items = response.body.list;
+
+                            if(this.page > 1) {
+                                this.prevPage = parseInt(this.page,10) - 1;
+                            } else {
+                                this.prevPage = 1;
+                            }
+
+                            if(response.body.cnt > this.page * 6) {
+                                this.nextPage = parseInt(this.page,10) + 1;
+                            } else {
+                                this.nextPage = this.page;
+                            }
+                        });
+            }
+        },
+        computed : {
+            formatDate : function(){
+                var pattern = /(\d{4})(\d{2})(\d{2})/;
+                return this.date.replace(pattern, '$1 $2/$3');
+            }
+        }
+    };
+
+    var routes = [
+        { path: '/', component : coverage},
+        { path: '/area/:date', component : area},
+        { path: '/area', component : area},
+        { path: '/areaNotAll/:date/:page', component : areaNotAll},
+        { path: '/areaNotAll', component : areaNotAll},
+        { path: '/ctr/:date', component : ctr},
+        { path: '/ctr', component : ctr},
+        { path: '/ctrNotAll/:date/:page', component : ctrNotAll},
+        { path: '/ctrNotAll', component : ctrNotAll},
+        { path: '/ctr40/:date', component : ctr40},
+        { path: '/ctr40', component : ctr40},
+        { path: '/ctr40NotAll/:date/:page', component : ctr40NotAll},
+        { path: '/ctr40NotAll', component : ctr40NotAll},
+        { path: '/coverage/:date', component : coverage},
+        { path: '/coverage', component : coverage}
+    ];
+
+    var router = new VueRouter({
+        routes
+    });
+
+    new Vue({
+        router,
+        el: '#container'
+    });
 </script>
 </body>
 </html>
