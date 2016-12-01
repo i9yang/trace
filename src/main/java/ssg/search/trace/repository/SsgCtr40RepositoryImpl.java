@@ -12,25 +12,6 @@ public class SsgCtr40RepositoryImpl extends QueryDslRepositorySupport implements
 	}
 
 	@Override
-	public List<SsgCtr40> findAllQ() {
-		return findAllQ(1,9999);
-	}
-
-	@Override
-	public List<SsgCtr40> findAllQ(int page, int pageSize) {
-		QSsgCtr40 ssgCtr40 = QSsgCtr40.ssgCtr40;
-		QSsgSite ssgSite = QSsgSite.ssgSite;
-
-		return from(ssgCtr40)
-				.innerJoin(ssgCtr40.SSG_SITE, ssgSite)
-				.orderBy(ssgCtr40.SITE_NO.asc(), ssgCtr40.TOTAL.desc(), ssgCtr40.COUNT.desc())
-				.limit(pageSize)
-				.offset((page-1) * pageSize)
-				.fetchJoin()
-				.fetch();
-	}
-
-	@Override
 	public List<SsgCtr40> findByCritnDtQ(String date) {
 		QSsgCtr40 ssgCtr40 = QSsgCtr40.ssgCtr40;
 		QSsgSite ssgSite = QSsgSite.ssgSite;

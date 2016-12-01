@@ -12,25 +12,6 @@ public class SsgAreaRepositoryImpl extends QueryDslRepositorySupport implements 
 	}
 
 	@Override
-	public List<SsgArea> findAllQ() {
-		return findAllQ(1,9999);
-	}
-
-	@Override
-	public List<SsgArea> findAllQ(int page, int pageSize) {
-		QSsgArea ssgArea = QSsgArea.ssgArea;
-		QSsgSite ssgSite = QSsgSite.ssgSite;
-
-		return from(ssgArea)
-				.innerJoin(ssgArea.SSG_SITE, ssgSite)
-				.orderBy(ssgArea.SITE_NO.asc(), ssgArea.PV_COUNT.desc(), ssgArea.CLICK_COUNT.desc())
-				.limit(pageSize)
-				.offset((page-1) * pageSize)
-				.fetchJoin()
-				.fetch();
-	}
-
-	@Override
 	public List<SsgArea> findByCritnDtQ(String date) {
 		QSsgArea ssgArea = QSsgArea.ssgArea;
 		QSsgSite ssgSite = QSsgSite.ssgSite;
