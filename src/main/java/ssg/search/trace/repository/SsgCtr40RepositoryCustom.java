@@ -1,5 +1,6 @@
 package ssg.search.trace.repository;
 
+import ssg.search.trace.dto.Parameter;
 import ssg.search.trace.dto.SsgCtr;
 import ssg.search.trace.dto.SsgCtr40;
 
@@ -9,4 +10,7 @@ public interface SsgCtr40RepositoryCustom {
 	List<SsgCtr40> findByCritnDtQ(String date);
 	List<SsgCtr40> findNotAllByCritnDtQ(String date, int page, int pageSize);
 	long findNotAllByCritnDtCountQ(String date);
+
+	List<SsgCtr40> findNotAllByCritnDtQ(Parameter parameter);
+	long findNotAllByCritnDtCountQ(Parameter parameter);
 }

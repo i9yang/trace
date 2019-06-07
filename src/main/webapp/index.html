@@ -5,7 +5,7 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/pikaday/1.5.1/css/pikaday.min.css" rel="stylesheet"/>
 
-    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/vue@2.0.0/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/vue.resource/1.0.3/vue-resource.min.js"></script>
     <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vuex/2.0.0/vuex.min.js"></script>
@@ -61,7 +61,7 @@
         <div style="text-align:center;">
             <h3>{{formatDate}} {{title}}</h3>
             <div style="text-align:center;">
-                <input type="text" id="datepicker" placeholder="Pick a date" v-model="formatDate" readonly/>
+                <input type="text" id="datepicker" v-model="formatDate" readonly/>
             </div>
         </div>
         <div>
@@ -101,7 +101,7 @@
         <div style="text-align:center;">
             <h3>{{formatDate}} {{title}}</h3>
             <div style="text-align:center;">
-                <input type="text" id="datepicker" placeholder="Pick a date" v-model="formatDate" readonly/>
+                <input type="text" id="datepicker" v-model="formatDate" readonly/>
             </div>
         </div>
         <div>
@@ -137,7 +137,18 @@
             <div style="text-align:center;">
                 <router-link v-bind:to="'/ctrNotAll/' + date + '/' + prevPage"><button class="btn btn-default btn-sm">prev</button></router-link>
                 <router-link v-bind:to="'/ctrNotAll/' + date + '/' + nextPage"><button class="btn btn-default btn-sm">next</button></router-link>
-                <input type="text" id="datepicker" placeholder="Pick a date" v-model="formatDate" readonly/>
+                <input type="text" id="datepicker" v-model="formatDate" readonly/>
+                <select v-model="site">
+                    <option  value="">전체</option>
+                    <option value="6001">6001</option>
+                    <option value="6002">6002</option>
+                    <option value="6003">6003</option>
+                    <option value="6004">6004</option>
+                    <option value="6005">6005</option>
+                    <option value="6009">6009</option>
+                </select>
+                <input type="text" id="query" v-model="query"/>
+                <button v-on:click="search">Search</button>
             </div>
         </div>
         <div>
@@ -174,7 +185,7 @@
         <div style="text-align:center;">
             <h3>{{formatDate}} {{title}}</h3>
             <div style="text-align:center;">
-                <input type="text" id="datepicker" placeholder="Pick a date" v-model="formatDate" readonly/>
+                <input type="text" id="datepicker" v-model="formatDate" readonly/>
             </div>
         </div>
         <div>
@@ -210,7 +221,18 @@
             <div style="text-align:center;">
                 <router-link v-bind:to="'/ctr40NotAll/' + date + '/' + prevPage"><button class="btn btn-default btn-sm">prev</button></router-link>
                 <router-link v-bind:to="'/ctr40NotAll/' + date + '/' + nextPage"><button class="btn btn-default btn-sm">next</button></router-link>
-                <input type="text" id="datepicker" placeholder="Pick a date" v-model="formatDate" readonly/>
+                <input type="text" id="datepicker" v-model="formatDate" readonly/>
+                <select v-model="site">
+                    <option  value="">전체</option>
+                    <option value="6001">6001</option>
+                    <option value="6002">6002</option>
+                    <option value="6003">6003</option>
+                    <option value="6004">6004</option>
+                    <option value="6005">6005</option>
+                    <option value="6009">6009</option>
+                </select>
+                <input type="text" id="query" v-model="query"/>
+                <button v-on:click="search">Search</button>
             </div>
         </div>
         <div>
@@ -247,7 +269,7 @@
         <div style="text-align:center;">
             <h3>{{formatDate}} {{title}}</h3>
             <div style="text-align:center;">
-                <input type="text" id="datepicker" placeholder="Pick a date" v-model="formatDate" readonly/>
+                <input type="text" id="datepicker" v-model="formatDate" readonly/>
             </div>
         </div>
         <div>
@@ -286,9 +308,20 @@
         <div style="text-align:center;">
             <h3>{{formatDate}} {{title}}</h3>
             <div style="text-align:center;">
-                <router-link v-bind:to="'/areaNotAll/' + date + '/' + prevPage"><button class="btn btn-default btn-sm">prev</button></router-link>
-                <router-link v-bind:to="'/areaNotAll/' + date + '/' + nextPage"><button class="btn btn-default btn-sm">next</button></router-link>
-                <input type="text" id="datepicker" placeholder="Pick a date" v-model="formatDate" readonly/>
+                <router-link v-bind:to="'/areaNotAll/' + date + '/' + prevPage + '?query=' + query + '&site=' + site"><button class="btn btn-default btn-sm">prev</button></router-link>
+                <router-link v-bind:to="'/areaNotAll/' + date + '/' + nextPage + '?query=' + query + '&site=' + site"><button class="btn btn-default btn-sm">next</button></router-link>
+                <input type="text" id="datepicker" v-model="formatDate" readonly/>
+                <select v-model="site">
+                    <option  value="">전체</option>
+                    <option value="6001">6001</option>
+                    <option value="6002">6002</option>
+                    <option value="6003">6003</option>
+                    <option value="6004">6004</option>
+                    <option value="6005">6005</option>
+                    <option value="6009">6009</option>
+                </select>
+                <input type="text" id="query" v-model="query"/>
+                <button v-on:click="search">Search</button>
             </div>
         </div>
         <div>
@@ -332,7 +365,11 @@
         recipe : '레시피',
         spprice : '특가상품',
         banr : '배너',
-        lifemagazine : '라이프매거진'
+        lifemagazine : '라이프매거진',
+        item : '상품',
+        item_list : '상품',
+        taste : '내취타취'
+
     };
 
     var coverage = {
@@ -436,7 +473,7 @@
     };
 
     var ctrNotAll = {
-        template : '#ctrNotAllTemplate' ,
+        template : '#ctr40NotAllTemplate' ,
         data : function(){
             return {
                 items : [],
@@ -445,11 +482,25 @@
                 page: 1,
                 title: 'CTR 검색어별',
                 prevPage: 1,
-                nextPage: 2
+                nextPage: 2,
+                query: '',
+                site: '',
+                areaMap: {}
             }
         },
         created : function(){
-            this.changeDate();
+            this.areaMap =  areaMap;
+            this.query = this.$route.params.query || '';
+            this.site = this.$route.params.site || '';
+            this.page = this.$route.params.page || '1';
+
+            if (this.$route.params.date) {
+                this.date = this.$route.params.date;
+            } else {
+                this.date = moment().subtract(1, 'days').format('YYYYMMDD');
+            }
+
+            this.init();
         },
         mounted : function(){
             var picker = new Pikaday({
@@ -464,20 +515,11 @@
             });
         },
         watch: {
-            '$route': 'changeDate'
+            '$route': 'init'
         },
         methods: {
-            changeDate: function () {
-                this.items =[];
-                if (this.$route.params.date) {
-                    this.date = this.$route.params.date;
-                    this.page = this.$route.params.page;
-                } else {
-                    this.date = moment().subtract(1, 'days').format('YYYYMMDD');
-                    this.page = 1;
-                }
-
-                this.$http.get('/ctrNotAll/' + this.date + '/' + this.page)
+            init: function(){
+                this.$http.get('/ctrNotAll/' + this.date + '/' + this.page + "?query=" + this.query + "&site=" + this.site)
                         .then(function (response) {
                             this.items = response.body.list;
 
@@ -493,6 +535,9 @@
                                 this.nextPage = this.page;
                             }
                         });
+            }
+            , search: function() {
+                router.push('/ctrNotAll/' + this.date + '/1?query=' + this.query + '&site=' + this.site);
             }
         },
         computed : {
@@ -563,11 +608,25 @@
                 page: 1,
                 title: '검색 품질 측정용 CTR 검색어별',
                 prevPage: 1,
-                nextPage: 2
+                nextPage: 2,
+                query: '',
+                site: '',
+                areaMap: {}
             }
         },
         created : function(){
-            this.changeDate();
+            this.areaMap =  areaMap;
+            this.query = this.$route.params.query || '';
+            this.site = this.$route.params.site || '';
+            this.page = this.$route.params.page || '1';
+
+            if (this.$route.params.date) {
+                this.date = this.$route.params.date;
+            } else {
+                this.date = moment().subtract(1, 'days').format('YYYYMMDD');
+            }
+
+            this.init();
         },
         mounted : function(){
             var picker = new Pikaday({
@@ -582,20 +641,11 @@
             });
         },
         watch: {
-            '$route': 'changeDate'
+            '$route': 'init'
         },
         methods: {
-            changeDate: function () {
-                this.items =[];
-                if (this.$route.params.date) {
-                    this.date = this.$route.params.date;
-                    this.page = this.$route.params.page;
-                } else {
-                    this.date = moment().subtract(1, 'days').format('YYYYMMDD');
-                    this.page = 1;
-                }
-
-                this.$http.get('/ctr40NotAll/' + this.date + '/' + this.page)
+            init: function(){
+                this.$http.get('/ctr40NotAll/' + this.date + '/' + this.page + "?query=" + this.query + "&site=" + this.site)
                         .then(function (response) {
                             this.items = response.body.list;
 
@@ -611,6 +661,9 @@
                                 this.nextPage = this.page;
                             }
                         });
+            }
+            , search: function() {
+                router.push('/ctr40NotAll/' + this.date + '/1?query=' + this.query + '&site=' + this.site);
             }
         },
         computed : {
@@ -684,12 +737,24 @@
                 title: '영역별 지표 검색어별',
                 prevPage: 1,
                 nextPage: 2,
+                query: '',
+                site: '',
                 areaMap: {}
             }
         },
         created : function(){
             this.areaMap =  areaMap;
-            this.changeDate();
+            this.query = this.$route.params.query || '';
+            this.site = this.$route.params.site || '';
+            this.page = this.$route.params.page || '1';
+
+            if (this.$route.params.date) {
+                this.date = this.$route.params.date;
+            } else {
+                this.date = moment().subtract(1, 'days').format('YYYYMMDD');
+            }
+
+            this.init();
         },
         mounted : function(){
             var picker = new Pikaday({
@@ -704,20 +769,11 @@
             });
         },
         watch: {
-            '$route': 'changeDate'
+            '$route': 'init'
         },
         methods: {
-            changeDate: function () {
-                this.items =[];
-                if (this.$route.params.date) {
-                    this.date = this.$route.params.date;
-                    this.page = this.$route.params.page;
-                } else {
-                    this.date = moment().subtract(1, 'days').format('YYYYMMDD');
-                    this.page = 1;
-                }
-
-                this.$http.get('/areaNotAll/' + this.date + '/' + this.page)
+            init: function(){
+                this.$http.get('/areaNotAll/' + this.date + '/' + this.page + "?query=" + this.query + "&site=" + this.site)
                         .then(function (response) {
                             this.items = response.body.list;
 
@@ -733,6 +789,9 @@
                                 this.nextPage = this.page;
                             }
                         });
+            }
+            , search: function() {
+                router.push('/areaNotAll/' + this.date + '/1?query=' + this.query + '&site=' + this.site);
             }
         },
         computed : {
